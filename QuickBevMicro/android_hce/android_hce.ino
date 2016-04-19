@@ -80,26 +80,27 @@ void loop()
       Serial.print("responseLength: "); Serial.println(responseLength);
        
       nfc.PrintHexChar(response, responseLength);
-      
+      uint8_t done = 0;
       do {
-        uint8_t apdu[] = "Hello from Arduino";
+        uint8_t apdu[] = {0x80, 0xF0, 0x00, 0x00, 0x00, 0xF2, 0x22, 0x22, 0x22, 0x22};
         uint8_t back[32];
         uint8_t length = 32; 
 
         success = nfc.inDataExchange(apdu, sizeof(apdu), back, &length);
         
         if(success) {
-         
+          done = 1;
           Serial.print("responseLength: "); Serial.println(length);
            
           nfc.PrintHexChar(back, length);
+          break;
         }
         else {
           
           Serial.println("Broken connection?"); 
         }
       }
-      while(success);
+      while(success && done == 0);
     }
     else {
      
