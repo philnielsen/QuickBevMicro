@@ -190,6 +190,11 @@ uint8_t getOrderAmount(String token){
      if token doesn't exist return 0,
      if token exists and hasn't been processed, return amount
   */
+  // See if has been processed
+  // HTTP GET /Orders/%2D[token]/processed.json returns true or false
+  
+  // Update to processed
+  // HTTP PATCH -d {"processed":true} /Orders/%2D[token].json
 
   return 5;
 }
