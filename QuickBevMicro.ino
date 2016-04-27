@@ -16,7 +16,7 @@ byte sensorPin       = 2;
 
 // The hall-effect flow sensor outputs approximately 4.5 pulses per second per
 // litre/minute of flow.
-float calibrationFactor = 98;
+float calibrationFactor = 140;
 
 volatile byte pulseCount;  
 
@@ -196,17 +196,18 @@ uint8_t getOrderAmount(String token){
   // Update to processed
   // HTTP PATCH -d {"processed":true} /Orders/%2D[token].json
 
-  return 5;
+  return 200;
 }
 
 void processOrder(String token){
   uint8_t amount = getOrderAmount(token);
   if (amount > 0){
-    while (amount < totalMilliLitres){
-      openSolenoidValve();
+    openSolenoidValve();
+    while (totalMilliLitres < amount){
       flowMeterBody();
     }
     closeSolenoidValve();
+    totalMilliLitres = 0;
   }
   else {
    
@@ -220,6 +221,7 @@ void setup()
 {    
     Serial.begin(115200);
     pinMode(solenoidValvePin, OUTPUT);
+    closeSolenoidValve();
     setupNFC();
     setupFlowMeter();
 }
